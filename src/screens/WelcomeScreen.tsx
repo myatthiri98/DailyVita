@@ -2,11 +2,11 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch } from 'react-redux'
-import CustomButton from '../components/CustomButton'
-import { setCurrentStep } from '../store/slices/onboardingSlice'
-import { BaseNavigationProps } from '../types'
-import { AppDispatch } from '../store'
-import { COLORS, FONT_SIZES, FONT_WEIGHTS, SCREEN_NAMES } from '../constants'
+import CustomButton from '@/components/CustomButton'
+import { setCurrentStep } from '@/store/slices/onboardingSlice'
+import { BaseNavigationProps } from '@/types'
+import { AppDispatch } from '@/store'
+import { COLORS, FONT_SIZES, FONT_WEIGHTS, SCREEN_NAMES } from '@/constants'
 
 type WelcomeScreenProps = BaseNavigationProps<'Welcome'>
 

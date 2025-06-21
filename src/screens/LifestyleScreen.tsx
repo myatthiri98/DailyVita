@@ -2,17 +2,17 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
-import CustomButton from '../components/CustomButton'
-import ProgressBar from '../components/ProgressBar'
+import CustomButton from '@/components/CustomButton'
+import ProgressBar from '@/components/ProgressBar'
 import {
   setDailyExposure,
   setSmoke,
   setAlcohol,
   saveOnboardingData,
-} from '../store/slices/onboardingSlice'
-import { BaseNavigationProps } from '../types'
-import { RootState, AppDispatch } from '../store'
-import RadioButton from '../components/RadioButton'
+} from '@/store/slices/onboardingSlice'
+import { BaseNavigationProps } from '@/types'
+import { RootState, AppDispatch } from '@/store'
+import RadioButton from '@/components/RadioButton'
 import {
   COLORS,
   DIMENSIONS,
@@ -21,7 +21,7 @@ import {
   ALCOHOL_OPTIONS,
   commonStyles,
   textStyles,
-} from '../constants'
+} from '@/constants'
 
 type LifestyleScreenProps = BaseNavigationProps<'Lifestyle'>
 

@@ -10,25 +10,24 @@ module.exports = function (api) {
       // Required for react-native-reanimated
       'react-native-reanimated/plugin',
       
-      // Optional: Add module resolver if you want to use absolute imports
-      // [
-      //   'module-resolver',
-      //   {
-      //     root: ['./src'],
-      //     extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
-      //     alias: {
-      //       '@': './src',
-      //       '@components': './src/components',
-      //       '@screens': './src/screens',
-      //       '@store': './src/store',
-      //       '@types': './src/types',
-      //       '@utils': './src/utils',
-      //       '@hooks': './src/hooks',
-      //       '@constants': './src/constants',
-      //       '@data': './src/data',
-      //     },
-      //   },
-      // ],
+      // Module resolver for absolute imports
+      [
+        'module-resolver',
+        {
+          root: ['./src'],
+          extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
+          alias: {
+            '@': './src',
+            '@/components': './src/components',
+            '@/screens': './src/screens',
+            '@/store': './src/store',
+            '@/types': './src/types',
+            '@/constants': './src/constants',
+            '@/data': './src/data',
+            '@/navigation': './src/navigation',
+          },
+        },
+      ],
     ],
     env: {
       production: {

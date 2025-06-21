@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import { ProgressBarProps } from '../types'
-import { COLORS } from '../constants'
+import { ProgressBarProps } from '@/types'
+import { COLORS } from '@/constants'
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
   currentStep,

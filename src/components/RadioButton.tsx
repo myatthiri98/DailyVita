@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { RadioButtonProps } from '../types'
-import { COLORS, DIMENSIONS, FONT_SIZES, FONT_WEIGHTS } from '../constants'
+import { RadioButtonProps } from '@/types'
+import { COLORS, DIMENSIONS, FONT_SIZES, FONT_WEIGHTS } from '@/constants'
 
 const RadioButton = <T = string | number | boolean,>({
   selected,

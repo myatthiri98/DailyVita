@@ -8,15 +8,15 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
-import CustomButton from '../components/CustomButton'
-import ProgressBar from '../components/ProgressBar'
+import CustomButton from '@/components/CustomButton'
+import ProgressBar from '@/components/ProgressBar'
 import {
   setSelectedDiets,
   nextStep,
   prevStep,
-} from '../store/slices/onboardingSlice'
-import { RootState, AppDispatch } from '../store'
-import { BaseNavigationProps, Diet } from '../types'
+} from '@/store/slices/onboardingSlice'
+import { RootState, AppDispatch } from '@/store'
+import { BaseNavigationProps, Diet } from '@/types'
 import {
   COLORS,
   DIMENSIONS,
@@ -26,8 +26,8 @@ import {
   commonStyles,
   textStyles,
   shadows,
-} from '../constants'
-import dietsData from '../data/diets.json'
+} from '@/constants'
+import dietsData from '@/data/diets.json'
 
 type DietsScreenProps = BaseNavigationProps<'Diets'>
 

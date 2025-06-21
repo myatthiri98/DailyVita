@@ -6,14 +6,14 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native'
-import { ButtonProps, ButtonVariant } from '../types'
+import { ButtonProps, ButtonVariant } from '@/types'
 import {
   COLORS,
   DIMENSIONS,
   FONT_SIZES,
   FONT_WEIGHTS,
   ANIMATION,
-} from '../constants'
+} from '@/constants'
 
 const CustomButton: React.FC<ButtonProps> = ({
   title,

@@ -6,9 +6,9 @@ import {
   Allergy,
   OnboardingState,
   FormattedOnboardingData,
-} from '../../types'
-import { STORAGE_KEYS } from '../../constants'
-import { AlcoholOption } from '../../constants'
+} from '@/types'
+import { STORAGE_KEYS } from '@/constants'
+import { AlcoholOption } from '@/constants'
 
 // Helper function to format onboarding data
 const formatOnboardingData = (

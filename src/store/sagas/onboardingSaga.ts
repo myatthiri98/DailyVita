@@ -6,9 +6,9 @@ import {
   setCompleted,
   formatOnboardingData,
 } from '../slices/onboardingSlice'
-import { RootState } from '../index'
-import { FormattedOnboardingData, SagaEffect } from '../../types'
-import { STORAGE_KEYS, REDUX_ACTIONS } from '../../constants'
+import { RootState } from '@/store'
+import { FormattedOnboardingData } from '@/types'
+import { STORAGE_KEYS, REDUX_ACTIONS } from '@/constants'
 
 function* saveOnboardingDataSaga(): Generator<unknown, void, RootState> {
   try {

@@ -4,14 +4,14 @@ import {
   createStackNavigator,
   StackNavigationProp,
 } from '@react-navigation/stack'
-import { RootStackParamList } from '../types'
-import { SCREEN_NAMES } from '../constants'
+import { RootStackParamList } from '@/types'
+import { SCREEN_NAMES } from '@/constants'
 
-import WelcomeScreen from '../screens/WelcomeScreen'
-import HealthConcernsScreen from '../screens/HealthConcernsScreen'
-import DietsScreen from '../screens/DietsScreen'
-import LifestyleScreen from '../screens/LifestyleScreen'
-import AllergiesScreen from '../screens/AllergiesScreen'
+import WelcomeScreen from '@/screens/WelcomeScreen'
+import HealthConcernsScreen from '@/screens/HealthConcernsScreen'
+import DietsScreen from '@/screens/DietsScreen'
+import LifestyleScreen from '@/screens/LifestyleScreen'
+import AllergiesScreen from '@/screens/AllergiesScreen'
 
 export type RootStackNavigationProp = StackNavigationProp<RootStackParamList>
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import { WithApiState } from '../types'
-import { COLORS, FONT_SIZES, DIMENSIONS, MESSAGES } from '../constants'
+import { WithApiState } from '@/types'
+import { COLORS, FONT_SIZES, DIMENSIONS, MESSAGES } from '@/constants'
 
 const withApiState = <P extends object>(
   WrappedComponent: React.ComponentType<P>,

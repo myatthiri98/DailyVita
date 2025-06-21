@@ -9,16 +9,16 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
-import CustomButton from '../components/CustomButton'
-import ProgressBar from '../components/ProgressBar'
+import CustomButton from '@/components/CustomButton'
+import ProgressBar from '@/components/ProgressBar'
 import {
   setAllergies,
   setCustomAllergies,
   prevStep,
   nextStep,
-} from '../store/slices/onboardingSlice'
-import { RootState, AppDispatch } from '../store'
-import { BaseNavigationProps, Allergy } from '../types'
+} from '@/store/slices/onboardingSlice'
+import { RootState, AppDispatch } from '@/store'
+import { BaseNavigationProps, Allergy } from '@/types'
 import {
   COLORS,
   DIMENSIONS,
@@ -28,8 +28,8 @@ import {
   commonStyles,
   textStyles,
   shadows,
-} from '../constants'
-import allergiesData from '../data/allergies.json'
+} from '@/constants'
+import allergiesData from '@/data/allergies.json'
 
 type AllergiesScreenProps = BaseNavigationProps<'Allergies'>
 

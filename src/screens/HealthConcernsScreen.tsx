@@ -13,16 +13,16 @@ import DraggableFlatList, {
   RenderItemParams,
 } from 'react-native-draggable-flatlist'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import CustomButton from '../components/CustomButton'
-import ProgressBar from '../components/ProgressBar'
+import CustomButton from '@/components/CustomButton'
+import ProgressBar from '@/components/ProgressBar'
 import {
   setHealthConcerns,
   setPrioritizedConcerns,
   nextStep,
   prevStep,
-} from '../store/slices/onboardingSlice'
-import { BaseNavigationProps, HealthConcern } from '../types'
-import { RootState, AppDispatch } from '../store'
+} from '@/store/slices/onboardingSlice'
+import { BaseNavigationProps, HealthConcern } from '@/types'
+import { RootState, AppDispatch } from '@/store'
 import {
   COLORS,
   DIMENSIONS,
@@ -32,9 +32,9 @@ import {
   ANIMATION,
   LIMITS,
   MESSAGES,
-} from '../constants'
-import { commonStyles, textStyles, shadows } from '../constants'
-import healthConcernsData from '../data/healthconcerns.json'
+} from '@/constants'
+import { commonStyles, textStyles, shadows } from '@/constants'
+import healthConcernsData from '@/data/healthconcerns.json'
 
 type HealthConcernsScreenProps = BaseNavigationProps<'HealthConcerns'>
 
