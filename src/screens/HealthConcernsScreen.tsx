@@ -9,7 +9,6 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
-import { StackNavigationProp } from '@react-navigation/stack'
 import DraggableFlatList, {
   RenderItemParams,
 } from 'react-native-draggable-flatlist'
@@ -22,14 +21,22 @@ import {
   nextStep,
   prevStep,
 } from '../store/slices/onboardingSlice'
-import { RootStackParamList } from '../navigation/AppNavigator'
+import { BaseNavigationProps, HealthConcern } from '../types'
 import { RootState, AppDispatch } from '../store'
-import { HealthConcern } from '../types'
+import {
+  COLORS,
+  DIMENSIONS,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  SCREEN_NAMES,
+  ANIMATION,
+  LIMITS,
+  MESSAGES,
+} from '../constants'
+import { commonStyles, textStyles, shadows } from '../constants'
 import healthConcernsData from '../data/healthconcerns.json'
 
-interface HealthConcernsScreenProps {
-  navigation: StackNavigationProp<RootStackParamList, 'HealthConcerns'>
-}
+type HealthConcernsScreenProps = BaseNavigationProps<'HealthConcerns'>
 
 const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
   navigation,
@@ -53,10 +60,10 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
       if (isSelected) {
         return prev.filter((item) => item.id !== concern.id)
       } else {
-        if (prev.length >= 5) {
+        if (prev.length >= LIMITS.MAX_HEALTH_CONCERNS) {
           Alert.alert(
-            'Maximum Selection',
-            'You can select up to 5 health concerns.',
+            MESSAGES.MAX_SELECTION,
+            MESSAGES.MAX_HEALTH_CONCERNS_MESSAGE,
           )
           return prev
         }
@@ -74,8 +81,8 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
       <TouchableOpacity
         style={[styles.priorityItem, isActive && styles.priorityItemActive]}
         onLongPress={drag}
-        delayLongPress={150}
-        activeOpacity={0.8}
+        delayLongPress={ANIMATION.LONG_PRESS_DELAY}
+        activeOpacity={ANIMATION.ACTIVE_OPACITY}
       >
         <View style={styles.priorityContent}>
           <View style={styles.priorityContainer}>
@@ -94,8 +101,8 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
   const handleNext = (): void => {
     if (selectedConcerns.length === 0) {
       Alert.alert(
-        'Selection Required',
-        'Please select at least one health concern.',
+        MESSAGES.SELECTION_REQUIRED,
+        MESSAGES.MIN_HEALTH_CONCERNS_MESSAGE,
       )
       return
     }
@@ -103,7 +110,7 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
     dispatch(setHealthConcerns(selectedConcerns))
     dispatch(setPrioritizedConcerns(prioritizedData))
     dispatch(nextStep())
-    navigation.navigate('Diets')
+    navigation.navigate(SCREEN_NAMES.DIETS)
   }
 
   const handleBack = (): void => {
@@ -112,17 +119,25 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={commonStyles.safeAreaContainer}
+      edges={['top', 'left', 'right']}
+    >
       <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={commonStyles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Health Concerns Selection Section */}
         <View style={styles.header}>
-          <Text style={styles.title}>
+          <Text style={textStyles.title}>
             Select the top health concerns.{' '}
-            <Text style={styles.asterisk}>*</Text>
+            <Text style={textStyles.asterisk}>*</Text>
           </Text>
-          <Text style={styles.subtitle}>(up to 5)</Text>
+          <Text style={textStyles.title}>
+            (up to {LIMITS.MAX_HEALTH_CONCERNS})
+          </Text>
         </View>
 
         <View style={styles.concernsGrid}>
@@ -139,6 +154,7 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
                   isSelected && styles.concernItemSelected,
                 ]}
                 onPress={() => handleConcernToggle(concern)}
+                testID={`concern-${concern.id}`}
               >
                 <Text
                   style={[
@@ -156,7 +172,7 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
         {/* Prioritize Section */}
         {selectedConcerns.length > 0 && (
           <View style={styles.prioritizeSection}>
-            <Text style={styles.prioritizeTitle}>Prioritize</Text>
+            <Text style={textStyles.sectionTitle}>Prioritize</Text>
 
             <GestureHandlerRootView style={styles.priorityList}>
               <DraggableFlatList
@@ -165,14 +181,15 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
                 keyExtractor={(item: HealthConcern) => item.id.toString()}
                 renderItem={renderPriorityItem}
                 scrollEnabled={false}
-                activationDistance={10}
+                activationDistance={ANIMATION.ACTIVATION_DISTANCE}
                 dragItemOverflow={true}
               />
             </GestureHandlerRootView>
           </View>
         )}
+
         <View style={styles.footer}>
-          <View style={styles.buttonContainer}>
+          <View style={commonStyles.buttonContainer}>
             <CustomButton
               title="Back"
               onPress={handleBack}
@@ -192,137 +209,100 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#C8E6C9',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
   header: {
-    marginTop: 30,
-    marginBottom: 30,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#2E5D32',
-    marginBottom: 8,
-    lineHeight: 28,
-  },
-  asterisk: {
-    color: '#FF6B47',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
+    marginTop: DIMENSIONS.SPACING_XXXL,
+    marginBottom: DIMENSIONS.SPACING_XXXL,
+    paddingHorizontal: DIMENSIONS.SPACING_XXL,
   },
   concernsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 30,
+    gap: DIMENSIONS.SPACING_SM,
+    paddingHorizontal: DIMENSIONS.SPACING_XXL,
+    marginBottom: DIMENSIONS.SPACING_XXXL,
   },
   concernItem: {
-    backgroundColor: '#E8F5E8',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    marginBottom: 8,
+    backgroundColor: COLORS.SUCCESS_LIGHT,
+    paddingVertical: DIMENSIONS.SPACING_MD,
+    paddingHorizontal: DIMENSIONS.SPACING_LG,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_LARGE,
+    marginBottom: DIMENSIONS.SPACING_SM,
     borderWidth: 2,
     borderColor: 'transparent',
     alignItems: 'center',
-    minHeight: 40,
+    minHeight: DIMENSIONS.SPACING_SECTION,
     justifyContent: 'center',
   },
   concernItemSelected: {
     backgroundColor: '#4A5D6A',
-    borderColor: '#2E5D32',
+    borderColor: COLORS.SECONDARY,
   },
   concernText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#2E5D32',
+    fontSize: FONT_SIZES.SMALL + 1, // 13px
+    fontWeight: FONT_WEIGHTS.SEMIBOLD,
+    color: COLORS.SECONDARY,
     textAlign: 'center',
   },
   concernTextSelected: {
-    color: '#FFFFFF',
+    color: COLORS.WHITE,
   },
   prioritizeSection: {
-    marginBottom: 10,
-  },
-  prioritizeTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2E5D32',
-    marginBottom: 16,
+    marginBottom: DIMENSIONS.SPACING_MD,
+    paddingHorizontal: DIMENSIONS.SPACING_XXL,
   },
   priorityList: {
     minHeight: 200,
   },
   priorityItem: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    marginBottom: 8,
+    backgroundColor: COLORS.WHITE,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_MEDIUM,
+    marginBottom: DIMENSIONS.SPACING_SM,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderColor: COLORS.GRAY_LIGHT,
+    ...shadows.small,
   },
   priorityItemActive: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.BACKGROUND_LIGHT,
     transform: [{ scale: 1.02 }],
-    borderColor: '#2E5D32',
+    borderColor: COLORS.SECONDARY,
   },
   priorityContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingVertical: DIMENSIONS.SPACING_MD,
+    paddingHorizontal: DIMENSIONS.SPACING_MD,
     justifyContent: 'space-between',
   },
   priorityContainer: {
     backgroundColor: '#4A5D6A',
     borderColor: 'transparent',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 20,
+    paddingVertical: DIMENSIONS.SPACING_XS + 1, // 5px
+    paddingHorizontal: DIMENSIONS.SPACING_MD,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_LARGE,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   priorityText: {
     flex: 1,
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#FFFFFF',
+    fontSize: FONT_SIZES.MEDIUM - 1, // 15px
+    fontWeight: FONT_WEIGHTS.MEDIUM,
+    color: COLORS.WHITE,
   },
   dragHandle: {
-    marginLeft: 12,
-    paddingVertical: 2,
+    marginLeft: DIMENSIONS.SPACING_MD,
+    paddingVertical: DIMENSIONS.SPACING_XS,
   },
   dragLine: {
-    width: 16,
+    width: DIMENSIONS.SPACING_LG,
     height: 2,
-    backgroundColor: '#999999',
-    marginBottom: 2,
+    backgroundColor: COLORS.GRAY_DARK,
+    marginBottom: DIMENSIONS.SPACING_XS,
   },
   footer: {
-    padding: 24,
-    backgroundColor: '#C8E6C9',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 16,
+    padding: DIMENSIONS.SPACING_XXL,
+    backgroundColor: COLORS.SECONDARY_LIGHT,
   },
   backButton: {
     flex: 1,

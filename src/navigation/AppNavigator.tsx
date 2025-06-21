@@ -4,20 +4,14 @@ import {
   createStackNavigator,
   StackNavigationProp,
 } from '@react-navigation/stack'
+import { RootStackParamList } from '../types'
+import { SCREEN_NAMES } from '../constants'
 
 import WelcomeScreen from '../screens/WelcomeScreen'
 import HealthConcernsScreen from '../screens/HealthConcernsScreen'
 import DietsScreen from '../screens/DietsScreen'
 import LifestyleScreen from '../screens/LifestyleScreen'
 import AllergiesScreen from '../screens/AllergiesScreen'
-
-export type RootStackParamList = {
-  Welcome: undefined
-  HealthConcerns: undefined
-  Diets: undefined
-  Lifestyle: undefined
-  Allergies: undefined
-}
 
 export type RootStackNavigationProp = StackNavigationProp<RootStackParamList>
 
@@ -27,16 +21,25 @@ const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Welcome"
+        initialRouteName={SCREEN_NAMES.WELCOME}
         screenOptions={{
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="HealthConcerns" component={HealthConcernsScreen} />
-        <Stack.Screen name="Diets" component={DietsScreen} />
-        <Stack.Screen name="Allergies" component={AllergiesScreen} />
-        <Stack.Screen name="Lifestyle" component={LifestyleScreen} />
+        <Stack.Screen name={SCREEN_NAMES.WELCOME} component={WelcomeScreen} />
+        <Stack.Screen
+          name={SCREEN_NAMES.HEALTH_CONCERNS}
+          component={HealthConcernsScreen}
+        />
+        <Stack.Screen name={SCREEN_NAMES.DIETS} component={DietsScreen} />
+        <Stack.Screen
+          name={SCREEN_NAMES.ALLERGIES}
+          component={AllergiesScreen}
+        />
+        <Stack.Screen
+          name={SCREEN_NAMES.LIFESTYLE}
+          component={LifestyleScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )

@@ -1,18 +1,23 @@
 import React from 'react'
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import { ApiStateProps } from '../types'
+import { WithApiState } from '../types'
+import { COLORS, FONT_SIZES, DIMENSIONS, MESSAGES } from '../constants'
 
 const withApiState = <P extends object>(
   WrappedComponent: React.ComponentType<P>,
-): React.FC<P & ApiStateProps> => {
-  return function WithApiStateComponent(props: P & ApiStateProps) {
+): React.FC<WithApiState<P>> => {
+  return function WithApiStateComponent(props: WithApiState<P>) {
     const { isLoading, error, children, ...otherProps } = props
 
     if (isLoading) {
       return (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#4CAF50" />
-          <Text style={styles.loadingText}>Loading...</Text>
+          <ActivityIndicator
+            size="large"
+            color={COLORS.SUCCESS}
+            testID="loading-indicator"
+          />
+          <Text style={styles.loadingText}>{MESSAGES.LOADING}</Text>
         </View>
       )
     }
@@ -20,7 +25,10 @@ const withApiState = <P extends object>(
     if (error) {
       return (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Error: {error}</Text>
+          <Text style={styles.errorText} testID="error-message">
+            {MESSAGES.ERROR_PREFIX}
+            {error}
+          </Text>
         </View>
       )
     }
@@ -36,23 +44,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: COLORS.BACKGROUND_LIGHT,
   },
   loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
+    marginTop: DIMENSIONS.SPACING_MD,
+    fontSize: FONT_SIZES.MEDIUM,
+    color: COLORS.GRAY_DISABLED,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    padding: 20,
+    backgroundColor: COLORS.BACKGROUND_LIGHT,
+    padding: DIMENSIONS.SPACING_XL,
   },
   errorText: {
-    fontSize: 16,
-    color: '#f44336',
+    fontSize: FONT_SIZES.MEDIUM,
+    color: COLORS.ERROR,
     textAlign: 'center',
   },
 })

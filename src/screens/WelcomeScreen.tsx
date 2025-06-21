@@ -2,32 +2,41 @@ import React from 'react'
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch } from 'react-redux'
-import { StackNavigationProp } from '@react-navigation/stack'
 import CustomButton from '../components/CustomButton'
 import { setCurrentStep } from '../store/slices/onboardingSlice'
-import { RootStackParamList } from '../navigation/AppNavigator'
+import { BaseNavigationProps } from '../types'
 import { AppDispatch } from '../store'
+import {
+  COLORS,
+  DIMENSIONS,
+  FONT_SIZES,
+  SCREEN_NAMES,
+  commonStyles,
+  textStyles,
+  shadows,
+} from '../constants'
 
 const { width } = Dimensions.get('window')
 
-interface WelcomeScreenProps {
-  navigation: StackNavigationProp<RootStackParamList, 'Welcome'>
-}
+type WelcomeScreenProps = BaseNavigationProps<'Welcome'>
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>()
 
   const handleGetStarted = (): void => {
     dispatch(setCurrentStep(1))
-    navigation.navigate('HealthConcerns')
+    navigation.navigate(SCREEN_NAMES.HEALTH_CONCERNS)
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <View style={styles.content}>
-        <View style={styles.headerSection}>
-          <Text style={styles.title}>Welcome to DailyVita</Text>
-          <Text style={styles.subtitle}>
+    <SafeAreaView
+      style={commonStyles.safeAreaContainer}
+      edges={['top', 'left', 'right']}
+    >
+      <View style={commonStyles.contentContainer}>
+        <View style={commonStyles.header}>
+          <Text style={textStyles.title}>Welcome to DailyVita</Text>
+          <Text style={textStyles.subtitle}>
             Hello, we are here to make your life{'\n'}healthier and happier
           </Text>
         </View>
@@ -66,8 +75,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={styles.bottomSection}>
-          <Text style={styles.description}>
+        <View style={commonStyles.footer}>
+          <Text style={textStyles.description}>
             We will ask couple of questions to better{'\n'}understand your
             vitamin need.
           </Text>
@@ -75,7 +84,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
           <CustomButton
             title="Get started"
             onPress={handleGetStarted}
-            style={styles.getStartedButton}
+            style={commonStyles.singleButtonContainer}
           />
         </View>
       </View>
@@ -84,37 +93,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#C8E6C9',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 24,
-    justifyContent: 'space-between',
-  },
-  headerSection: {
-    marginTop: 60,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#2E5D32',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#4A4A4A',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
   illustrationContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 40,
+    marginVertical: DIMENSIONS.SPACING_SECTION,
   },
   illustrationBox: {
     width: width * 0.8,
@@ -125,82 +108,60 @@ const styles = StyleSheet.create({
   },
   pill: {
     position: 'absolute',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#FFE5E5',
+    width: DIMENSIONS.PILL_SIZE,
+    height: DIMENSIONS.PILL_SIZE,
+    borderRadius: DIMENSIONS.PILL_SIZE / 2,
+    backgroundColor: COLORS.PRIMARY_LIGHT,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    ...shadows.medium,
   },
   pill1: {
     top: 20,
     left: 30,
-    backgroundColor: '#E3F2FD',
+    backgroundColor: COLORS.ACCENT_BLUE,
   },
   pill2: {
     top: 50,
     right: 20,
-    backgroundColor: '#F3E5F5',
+    backgroundColor: COLORS.ACCENT_PURPLE,
   },
   pill3: {
     bottom: 80,
     left: 20,
-    backgroundColor: '#FFF3E0',
+    backgroundColor: COLORS.ACCENT_ORANGE,
   },
   pill4: {
     bottom: 30,
     right: 40,
-    backgroundColor: '#E8F5E8',
+    backgroundColor: COLORS.SUCCESS_LIGHT,
   },
   pillText: {
-    fontSize: 20,
+    fontSize: FONT_SIZES.LARGE,
   },
   charactersContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 20,
+    gap: DIMENSIONS.SPACING_XL,
   },
   character: {
     alignItems: 'center',
     position: 'relative',
   },
   characterEmoji: {
-    fontSize: 80,
+    fontSize: DIMENSIONS.CHARACTER_EMOJI_SIZE,
   },
   speechBubble: {
     position: 'absolute',
     top: -10,
     right: -10,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 15,
-    padding: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    backgroundColor: COLORS.WHITE,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_LARGE,
+    padding: DIMENSIONS.SPACING_SM,
+    ...shadows.small,
   },
   speechText: {
-    fontSize: 12,
-  },
-  bottomSection: {
-    marginBottom: 40,
-    alignItems: 'center',
-  },
-  description: {
-    fontSize: 16,
-    color: '#4A4A4A',
-    lineHeight: 24,
-    marginBottom: 32,
-    textAlign: 'center',
-  },
-  getStartedButton: {
-    width: '100%',
+    fontSize: FONT_SIZES.SMALL,
   },
 })
 

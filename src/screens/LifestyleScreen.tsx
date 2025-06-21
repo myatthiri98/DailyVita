@@ -12,13 +12,22 @@ import {
   prevStep,
   saveOnboardingData,
 } from '../store/slices/onboardingSlice'
-import { RootStackParamList } from '../navigation/AppNavigator'
+import { BaseNavigationProps } from '../types'
 import { RootState, AppDispatch } from '../store'
 import RadioButton from '../components/RadioButton'
+import {
+  COLORS,
+  DIMENSIONS,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  ALCOHOL_OPTIONS,
+  MESSAGES,
+  commonStyles,
+  textStyles,
+  shadows,
+} from '../constants'
 
-interface LifestyleScreenProps {
-  navigation: StackNavigationProp<RootStackParamList, 'Lifestyle'>
-}
+type LifestyleScreenProps = BaseNavigationProps<'Lifestyle'>
 
 const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -29,7 +38,7 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
   const [smoking, setSmoking] = useState(isSmoke)
   const [alcoholConsumption, setAlcoholConsumption] = useState(alcohol)
 
-  const handleNext = () => {
+  const handleNext = (): void => {
     if (
       sunExposure === null ||
       smoking === null ||
@@ -48,13 +57,16 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
     dispatch(saveOnboardingData())
   }
 
-  const handleBack = () => {
+  const handleBack = (): void => {
     dispatch(prevStep())
     navigation.goBack()
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={commonStyles.safeAreaContainer}
+      edges={['top', 'left', 'right']}
+    >
       <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
       <ScrollView style={styles.content}>
@@ -62,17 +74,17 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
         <View style={styles.questionContainer}>
           <Text style={styles.questionTitle}>
             Is your daily exposure to sun is limited?{' '}
-            <Text style={styles.asterisk}>*</Text>
+            <Text style={textStyles.asterisk}>*</Text>
           </Text>
 
           <View style={styles.optionsContainer}>
-            <RadioButton
+            <RadioButton<boolean | null>
               selected={sunExposure}
               onPress={setSunExposure}
               label="Yes"
               value={true}
             />
-            <RadioButton
+            <RadioButton<boolean | null>
               selected={sunExposure}
               onPress={setSunExposure}
               label="No"
@@ -85,17 +97,17 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
         <View style={styles.questionContainer}>
           <Text style={styles.questionTitle}>
             Do you current smoke (tobacco or marijuana)?{' '}
-            <Text style={styles.asterisk}>*</Text>
+            <Text style={textStyles.asterisk}>*</Text>
           </Text>
 
           <View style={styles.optionsContainer}>
-            <RadioButton
+            <RadioButton<boolean | null>
               selected={smoking}
               onPress={setSmoking}
               label="Yes"
               value={true}
             />
-            <RadioButton
+            <RadioButton<boolean | null>
               selected={smoking}
               onPress={setSmoking}
               label="No"
@@ -108,7 +120,7 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
         <View style={styles.questionContainer}>
           <Text style={styles.questionTitle}>
             On average, how many alcoholic beverages do you have in a week?{' '}
-            <Text style={styles.asterisk}>*</Text>
+            <Text style={textStyles.asterisk}>*</Text>
           </Text>
 
           <View style={styles.optionsContainer}>
@@ -116,19 +128,19 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
               selected={alcoholConsumption}
               onPress={setAlcoholConsumption}
               label="0 - 1"
-              value="0-1"
+              value={ALCOHOL_OPTIONS.LOW}
             />
             <RadioButton
               selected={alcoholConsumption}
               onPress={setAlcoholConsumption}
               label="2 - 5"
-              value="2-5"
+              value={ALCOHOL_OPTIONS.MEDIUM}
             />
             <RadioButton
               selected={alcoholConsumption}
               onPress={setAlcoholConsumption}
               label="5+"
-              value="5+"
+              value={ALCOHOL_OPTIONS.HIGH}
             />
           </View>
         </View>
@@ -139,7 +151,7 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
           <CustomButton
             title="Get my personalized vitamin"
             onPress={handleNext}
-            style={styles.nextButton}
+            style={commonStyles.singleButtonContainer}
           />
         </View>
       </View>
@@ -148,83 +160,36 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#C8E6C9',
-  },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 30,
+    paddingHorizontal: DIMENSIONS.SPACING_XXL,
+    paddingTop: DIMENSIONS.SPACING_XXXL,
   },
   questionContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 24,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    // backgroundColor: COLORS.WHITE,
+    // borderRadius: DIMENSIONS.BORDER_RADIUS_LARGE,
+    // padding: DIMENSIONS.SPACING_XXL,
+    marginBottom: DIMENSIONS.SPACING_XL,
+    // ...shadows.medium,
   },
   questionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2E5D32',
-    marginBottom: 20,
-    lineHeight: 24,
-  },
-  asterisk: {
-    color: '#FF6B47',
+    fontSize: FONT_SIZES.MEDIUM,
+    fontWeight: FONT_WEIGHTS.SEMIBOLD,
+    color: COLORS.SECONDARY,
+    lineHeight: FONT_SIZES.XL,
+    marginBottom: DIMENSIONS.SPACING_XS,
   },
   optionsContainer: {
-    gap: 16,
-  },
-  radioContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  radioCircle: {
-    height: 24,
-    width: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#4CAF50',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-    backgroundColor: '#FFFFFF',
-  },
-  radioSelected: {
-    height: 12,
-    width: 12,
-    borderRadius: 6,
-    backgroundColor: '#4CAF50',
-  },
-  radioLabel: {
-    fontSize: 16,
-    color: '#2E5D32',
-    fontWeight: '500',
+    gap: DIMENSIONS.SPACING_XS,
   },
   footer: {
-    padding: 24,
-    backgroundColor: '#C8E6C9',
+    padding: DIMENSIONS.SPACING_XXL,
+    backgroundColor: COLORS.SECONDARY_LIGHT,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 16,
-  },
-  backButton: {
-    flex: 1,
-  },
-  nextButton: {
-    flex: 1,
+    gap: DIMENSIONS.SPACING_LG,
   },
 })
 

@@ -6,17 +6,16 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native'
+import { ButtonProps, ButtonVariant } from '../types'
+import {
+  COLORS,
+  DIMENSIONS,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  ANIMATION,
+} from '../constants'
 
-interface CustomButtonProps {
-  title: string
-  onPress: () => void
-  variant?: 'primary' | 'secondary'
-  disabled?: boolean
-  style?: ViewStyle
-  textStyle?: TextStyle
-}
-
-const CustomButton: React.FC<CustomButtonProps> = ({
+const CustomButton: React.FC<ButtonProps> = ({
   title,
   onPress,
   variant = 'primary',
@@ -24,26 +23,48 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   style,
   textStyle,
 }) => {
+  const getButtonStyle = (variant: ButtonVariant): ViewStyle => {
+    const baseStyle: ViewStyle = {
+      backgroundColor: variant === 'primary' ? COLORS.PRIMARY : 'transparent',
+      borderWidth: variant === 'secondary' ? 1 : 0,
+      borderColor: variant === 'secondary' ? COLORS.PRIMARY : 'transparent',
+    }
+
+    if (disabled) {
+      return {
+        ...baseStyle,
+        backgroundColor: COLORS.GRAY_MEDIUM,
+        borderColor: COLORS.GRAY_MEDIUM,
+      }
+    }
+
+    return baseStyle
+  }
+
+  const getTextStyle = (variant: ButtonVariant): TextStyle => {
+    const baseStyle: TextStyle = {
+      color: variant === 'primary' ? COLORS.WHITE : COLORS.PRIMARY,
+    }
+
+    if (disabled) {
+      return {
+        ...baseStyle,
+        color: COLORS.GRAY_DARK,
+      }
+    }
+
+    return baseStyle
+  }
+
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        styles[variant],
-        disabled && styles.disabled,
-        style,
-      ]}
+      style={[styles.button, getButtonStyle(variant), style]}
       onPress={onPress}
       disabled={disabled}
-      activeOpacity={0.8}
+      activeOpacity={ANIMATION.ACTIVE_OPACITY}
+      testID={`button-${variant}-${disabled ? 'disabled' : 'enabled'}`}
     >
-      <Text
-        style={[
-          styles.buttonText,
-          styles[`${variant}Text` as keyof typeof styles],
-          disabled && styles.disabledText,
-          textStyle,
-        ]}
-      >
+      <Text style={[styles.buttonText, getTextStyle(variant), textStyle]}>
         {title}
       </Text>
     </TouchableOpacity>
@@ -52,37 +73,16 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 25,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_BUTTON,
+    paddingVertical: DIMENSIONS.BUTTON_PADDING_VERTICAL,
+    paddingHorizontal: DIMENSIONS.BUTTON_PADDING_HORIZONTAL,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 50,
-  },
-  primary: {
-    backgroundColor: '#FF6B47',
-  },
-  secondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#FF6B47',
-  },
-  disabled: {
-    backgroundColor: '#cccccc',
-    borderColor: '#cccccc',
+    minHeight: DIMENSIONS.BUTTON_MIN_HEIGHT,
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  primaryText: {
-    color: '#FFFFFF',
-  },
-  secondaryText: {
-    color: '#FF6B47',
-  },
-  disabledText: {
-    color: '#888888',
+    fontSize: FONT_SIZES.MEDIUM,
+    fontWeight: FONT_WEIGHTS.SEMIBOLD,
   },
 })
 

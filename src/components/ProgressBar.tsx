@@ -1,10 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-
-interface ProgressBarProps {
-  currentStep: number
-  totalSteps: number
-}
+import { ProgressBarProps } from '../types'
+import { COLORS, DIMENSIONS } from '../constants'
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
   currentStep,
@@ -15,7 +12,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.progressBar}>
-        <View style={[styles.progress, { width: `${progress}%` }]} />
+        <View
+          style={[styles.progress, { width: `${progress}%` }]}
+          testID="progress-bar-fill"
+        />
       </View>
     </View>
   )
@@ -23,19 +23,19 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: DIMENSIONS.SPACING_XL,
+    paddingVertical: DIMENSIONS.SPACING_MD,
   },
   progressBar: {
-    height: 4,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 2,
+    height: DIMENSIONS.PROGRESS_BAR_HEIGHT,
+    backgroundColor: COLORS.GRAY_LIGHT,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_SMALL,
     overflow: 'hidden',
   },
   progress: {
     height: '100%',
-    backgroundColor: '#4CAF50',
-    borderRadius: 2,
+    backgroundColor: COLORS.SUCCESS,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_SMALL,
   },
 })
 

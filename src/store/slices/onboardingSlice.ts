@@ -7,8 +7,25 @@ import {
   OnboardingState,
   FormattedOnboardingData,
 } from '../../types'
+import { STORAGE_KEYS } from '../../constants'
+import { AlcoholOption } from '../../constants'
 
-const ONBOARDING_DATA_KEY = 'onboarding_data'
+// Helper function to format onboarding data
+const formatOnboardingData = (
+  state: OnboardingState,
+): FormattedOnboardingData => ({
+  health_concerns: state.prioritizedConcerns.map((concern, index) => ({
+    ...concern,
+    priority: index + 1,
+  })),
+  diets: state.selectedDiets,
+  is_daily_exposure: state.isDailyExposure,
+  is_smoke: state.isSmoke,
+  alcohol: state.alcohol,
+  allergies: state.allergies,
+  custom_allergies: state.customAllergies,
+  timestamp: new Date().toISOString(),
+})
 
 // Async thunk for saving onboarding data
 export const saveOnboardingData = createAsyncThunk(
@@ -16,25 +33,10 @@ export const saveOnboardingData = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const state = getState() as { onboarding: OnboardingState }
-
-      const dataToSave: FormattedOnboardingData = {
-        health_concerns: state.onboarding.prioritizedConcerns.map(
-          (concern, index) => ({
-            ...concern,
-            priority: index + 1,
-          }),
-        ),
-        diets: state.onboarding.selectedDiets,
-        is_daily_exposure: state.onboarding.isDailyExposure,
-        is_smoke: state.onboarding.isSmoke,
-        alcohol: state.onboarding.alcohol,
-        allergies: state.onboarding.allergies,
-        custom_allergies: state.onboarding.customAllergies,
-        timestamp: new Date().toISOString(),
-      }
+      const dataToSave = formatOnboardingData(state.onboarding)
 
       await AsyncStorage.setItem(
-        ONBOARDING_DATA_KEY,
+        STORAGE_KEYS.ONBOARDING_DATA,
         JSON.stringify(dataToSave),
       )
 
@@ -44,9 +46,11 @@ export const saveOnboardingData = createAsyncThunk(
       console.log('=====================')
 
       return dataToSave
-    } catch (error: any) {
-      console.error('Error saving onboarding data:', error)
-      return rejectWithValue(error.message)
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred'
+      console.error('Error saving onboarding data:', errorMessage)
+      return rejectWithValue(errorMessage)
     }
   },
 )
@@ -99,7 +103,7 @@ const onboardingSlice = createSlice({
     setSmoke: (state, action: PayloadAction<boolean>) => {
       state.isSmoke = action.payload
     },
-    setAlcohol: (state, action: PayloadAction<string>) => {
+    setAlcohol: (state, action: PayloadAction<AlcoholOption>) => {
       state.alcohol = action.payload
     },
     setAllergies: (state, action: PayloadAction<Allergy[]>) => {
@@ -156,3 +160,6 @@ export const {
 } = onboardingSlice.actions
 
 export default onboardingSlice.reducer
+
+// Export the helper function for reuse
+export { formatOnboardingData }

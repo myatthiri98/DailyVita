@@ -16,14 +16,21 @@ import {
   nextStep,
   prevStep,
 } from '../store/slices/onboardingSlice'
-import { RootStackParamList } from '../navigation/AppNavigator'
 import { RootState, AppDispatch } from '../store'
-import { Diet } from '../types'
+import { BaseNavigationProps, Diet } from '../types'
+import {
+  COLORS,
+  DIMENSIONS,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  SCREEN_NAMES,
+  commonStyles,
+  textStyles,
+  shadows,
+} from '../constants'
 import dietsData from '../data/diets.json'
 
-interface DietsScreenProps {
-  navigation: StackNavigationProp<RootStackParamList, 'Diets'>
-}
+type DietsScreenProps = BaseNavigationProps<'Diets'>
 
 const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -54,7 +61,7 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
   const handleNext = (): void => {
     dispatch(setSelectedDiets(localSelectedDiets))
     dispatch(nextStep())
-    navigation.navigate('Allergies')
+    navigation.navigate(SCREEN_NAMES.ALLERGIES)
   }
 
   const handleBack = (): void => {
@@ -65,13 +72,20 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
   const noneSelected = localSelectedDiets.length === 0
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={commonStyles.safeAreaContainer}
+      edges={['top', 'left', 'right']}
+    >
       <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={commonStyles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
-          <Text style={styles.title}>
-            Select the diets you follow. <Text style={styles.asterisk}>*</Text>
+          <Text style={textStyles.title}>
+            Select the diets you follow.{' '}
+            <Text style={textStyles.asterisk}>*</Text>
           </Text>
         </View>
 
@@ -80,6 +94,7 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
           <TouchableOpacity
             style={[styles.dietItem, noneSelected && styles.dietItemSelected]}
             onPress={() => handleDietToggle({ name: 'None' })}
+            testID="diet-none"
           >
             <View
               style={[styles.checkbox, noneSelected && styles.checkboxSelected]}
@@ -114,6 +129,7 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
                       selected && styles.dietItemSelected,
                     ]}
                     onPress={() => handleDietToggle(diet)}
+                    testID={`diet-${diet.id}`}
                   >
                     <View
                       style={[
@@ -139,6 +155,7 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
                             onPress={() =>
                               setShowTooltip(isTooltipVisible ? null : diet.id)
                             }
+                            testID={`info-${diet.id}`}
                           >
                             <Text style={styles.infoText}>i</Text>
                           </TouchableOpacity>
@@ -160,7 +177,7 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
       </ScrollView>
 
       <View style={styles.footer}>
-        <View style={styles.buttonContainer}>
+        <View style={commonStyles.buttonContainer}>
           <CustomButton
             title="Back"
             onPress={handleBack}
@@ -179,33 +196,17 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#C8E6C9',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
   header: {
-    marginTop: 30,
-    marginBottom: 30,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#2E5D32',
-    marginBottom: 8,
-    lineHeight: 28,
-  },
-  asterisk: {
-    color: '#FF6B47',
+    marginTop: DIMENSIONS.SPACING_SM,
+    marginBottom: DIMENSIONS.SPACING_SM,
+    paddingHorizontal: DIMENSIONS.SPACING_XXL,
   },
   dietsContainer: {
-    marginBottom: 20,
+    marginBottom: DIMENSIONS.SPACING_XL,
+    paddingHorizontal: DIMENSIONS.SPACING_XXL,
   },
   dietWrapper: {
-    marginBottom: 16,
+    marginBottom: DIMENSIONS.SPACING_LG,
     position: 'relative',
   },
   dietRow: {
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
   dietItem: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    paddingVertical: 16,
+    paddingVertical: DIMENSIONS.SPACING_LG,
     paddingHorizontal: 0,
     alignItems: 'center',
     flex: 1,
@@ -224,24 +225,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 4,
+    width: DIMENSIONS.SPACING_XXL,
+    height: DIMENSIONS.SPACING_XXL,
+    borderRadius: DIMENSIONS.SPACING_XS,
     borderWidth: 2,
-    borderColor: '#666666',
-    marginRight: 16,
+    borderColor: COLORS.GRAY_DISABLED,
+    marginRight: DIMENSIONS.SPACING_LG,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
   checkboxSelected: {
-    backgroundColor: '#2E5D32',
-    borderColor: '#2E5D32',
+    backgroundColor: COLORS.SECONDARY,
+    borderColor: COLORS.SECONDARY,
   },
   checkmark: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: COLORS.WHITE,
+    fontSize: FONT_SIZES.MEDIUM,
+    fontWeight: FONT_WEIGHTS.BOLD,
   },
   dietContent: {
     flex: 1,
@@ -257,59 +258,47 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dietText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#2E5D32',
-    marginRight: 8,
+    fontSize: FONT_SIZES.MEDIUM,
+    fontWeight: FONT_WEIGHTS.MEDIUM,
+    color: COLORS.SECONDARY,
+    marginRight: DIMENSIONS.SPACING_SM,
   },
   dietTextSelected: {
-    color: '#1B5E20',
-    fontWeight: '600',
+    color: COLORS.SECONDARY,
+    fontWeight: FONT_WEIGHTS.SEMIBOLD,
   },
   infoIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#E3F2FD',
+    width: DIMENSIONS.SPACING_XL,
+    height: DIMENSIONS.SPACING_XL,
+    borderRadius: DIMENSIONS.SPACING_XL / 2,
+    backgroundColor: COLORS.ACCENT_BLUE,
     justifyContent: 'center',
     alignItems: 'center',
   },
   infoText: {
-    fontSize: 12,
-    color: '#2196F3',
-    fontWeight: 'bold',
+    fontSize: FONT_SIZES.SMALL,
+    color: COLORS.SECONDARY,
+    fontWeight: FONT_WEIGHTS.BOLD,
   },
   tooltip: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 10,
-    marginLeft: 12,
+    backgroundColor: COLORS.WHITE,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_MEDIUM,
+    padding: DIMENSIONS.SPACING_MD,
+    marginLeft: DIMENSIONS.SPACING_MD,
     flex: 1,
     maxWidth: 200,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: COLORS.GRAY_LIGHT,
+    ...shadows.medium,
   },
   tooltipText: {
-    fontSize: 12,
-    color: '#666',
-    lineHeight: 16,
+    fontSize: FONT_SIZES.SMALL,
+    color: COLORS.GRAY_DISABLED,
+    lineHeight: DIMENSIONS.SPACING_LG,
   },
   footer: {
-    padding: 24,
-    backgroundColor: '#C8E6C9',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 16,
+    padding: DIMENSIONS.SPACING_XXL,
+    backgroundColor: COLORS.SECONDARY_LIGHT,
   },
   backButton: {
     flex: 1,

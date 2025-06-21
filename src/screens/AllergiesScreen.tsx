@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
-import { StackNavigationProp } from '@react-navigation/stack'
 import CustomButton from '../components/CustomButton'
 import ProgressBar from '../components/ProgressBar'
 import {
@@ -18,14 +17,21 @@ import {
   prevStep,
   nextStep,
 } from '../store/slices/onboardingSlice'
-import { RootStackParamList } from '../navigation/AppNavigator'
 import { RootState, AppDispatch } from '../store'
-import { Allergy } from '../types'
+import { BaseNavigationProps, Allergy } from '../types'
+import {
+  COLORS,
+  DIMENSIONS,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  SCREEN_NAMES,
+  commonStyles,
+  textStyles,
+  shadows,
+} from '../constants'
 import allergiesData from '../data/allergies.json'
 
-interface AllergiesScreenProps {
-  navigation: StackNavigationProp<RootStackParamList, 'Allergies'>
-}
+type AllergiesScreenProps = BaseNavigationProps<'Allergies'>
 
 const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -35,93 +41,162 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
 
   const [selectedAllergies, setSelectedAllergies] =
     useState<Allergy[]>(allergies)
-  const [customText, setCustomText] = useState<string>(customAllergies)
+  const [inputText, setInputText] = useState<string>('')
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
 
-  const handleAllergyToggle = (allergy: Allergy): void => {
-    setSelectedAllergies((prev) => {
-      const isSelected = prev.some((item) => item.id === allergy.id)
-      if (isSelected) {
-        return prev.filter((item) => item.id !== allergy.id)
-      } else {
-        return [...prev, allergy]
+  // Create a combined list of predefined allergies and any custom ones
+  const allAvailableAllergies = useMemo(() => {
+    const customAllergyList = customAllergies
+      .split(',')
+      .map((item, index) => ({
+        id: `custom_${index}`,
+        name: item.trim(),
+      }))
+      .filter((item) => item.name.length > 0)
+
+    return [...allergiesData.data, ...customAllergyList]
+  }, [customAllergies])
+
+  // Filter suggestions based on input text
+  const filteredSuggestions = useMemo(() => {
+    if (!inputText.trim()) return []
+
+    return allAvailableAllergies.filter(
+      (allergy) =>
+        allergy.name.toLowerCase().includes(inputText.toLowerCase()) &&
+        !selectedAllergies.some((selected) => selected.id === allergy.id),
+    )
+  }, [inputText, allAvailableAllergies, selectedAllergies])
+
+  const handleAllergySelect = (allergy: Allergy): void => {
+    setSelectedAllergies((prev) => [...prev, allergy])
+    setInputText('')
+    setShowSuggestions(false)
+  }
+
+  const handleAllergyRemove = (allergyId: string | number): void => {
+    setSelectedAllergies((prev) =>
+      prev.filter((allergy) => allergy.id !== allergyId),
+    )
+  }
+
+  const handleInputChange = (text: string): void => {
+    setInputText(text)
+    setShowSuggestions(text.trim().length > 0)
+  }
+
+  const handleAddCustomAllergy = (): void => {
+    const trimmedText = inputText.trim()
+    if (trimmedText.length === 0) return
+
+    // Check if it already exists
+    const exists = allAvailableAllergies.some(
+      (allergy) => allergy.name.toLowerCase() === trimmedText.toLowerCase(),
+    )
+
+    if (!exists) {
+      const newAllergy: Allergy = {
+        id: `custom_${Date.now()}`,
+        name: trimmedText,
       }
-    })
+      handleAllergySelect(newAllergy)
+    }
   }
 
   const handleSubmit = (): void => {
-    dispatch(setAllergies(selectedAllergies))
-    dispatch(setCustomAllergies(customText))
+    // Separate predefined and custom allergies
+    const predefinedAllergies = selectedAllergies.filter(
+      (allergy) => !allergy.id.toString().startsWith('custom_'),
+    )
+    const customAllergyNames = selectedAllergies
+      .filter((allergy) => allergy.id.toString().startsWith('custom_'))
+      .map((allergy) => allergy.name)
+
+    dispatch(setAllergies(predefinedAllergies))
+    dispatch(setCustomAllergies(customAllergyNames.join(', ')))
     dispatch(nextStep())
-    navigation.navigate('Lifestyle')
+    navigation.navigate(SCREEN_NAMES.LIFESTYLE)
   }
 
-  const handleBack = () => {
+  const handleBack = (): void => {
     dispatch(prevStep())
     navigation.goBack()
   }
 
-  const isSelected = (allergy: Allergy): boolean => {
-    return selectedAllergies.some((item) => item.id === allergy.id)
-  }
-
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={commonStyles.safeAreaContainer}
+      edges={['top', 'left', 'right']}
+    >
       <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
-      <ScrollView style={styles.content}>
+      <ScrollView style={commonStyles.scrollContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>
-            Write any specific allergies or sensitivity towards specific things.
-            (optional)
+          <Text style={textStyles.title}>
+            Write any specific allergies or sensitivity towards specific
+            things.(optional)
           </Text>
         </View>
 
         <View style={styles.allergiesContainer}>
-          {/* Predefined allergies */}
-          <View style={styles.predefinedContainer}>
-            {allergiesData.data.map((allergy) => {
-              const selected = isSelected(allergy)
-
-              return (
+          {/* Selected allergies display */}
+          {selectedAllergies.length > 0 && (
+            <View style={styles.selectedContainer}>
+              {selectedAllergies.map((allergy) => (
                 <TouchableOpacity
                   key={allergy.id}
-                  style={[
-                    styles.allergyTag,
-                    selected && styles.allergyTagSelected,
-                  ]}
-                  onPress={() => handleAllergyToggle(allergy)}
+                  style={styles.selectedTag}
+                  onPress={() => handleAllergyRemove(allergy.id)}
+                  testID={`selected-allergy-${allergy.id}`}
                 >
-                  <Text
-                    style={[
-                      styles.allergyText,
-                      selected && styles.allergyTextSelected,
-                    ]}
-                  >
-                    {allergy.name}
-                  </Text>
+                  <Text style={styles.selectedTagText}>{allergy.name}</Text>
+                  <Text style={styles.removeIcon}>×</Text>
                 </TouchableOpacity>
-              )
-            })}
-          </View>
+              ))}
+            </View>
+          )}
 
-          {/* Custom allergies input */}
+          {/* Input container */}
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              placeholder="Type your specific allergies here..."
-              placeholderTextColor="#999"
-              value={customText}
-              onChangeText={setCustomText}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
+              placeholder="Type allergies here..."
+              placeholderTextColor={COLORS.GRAY_DARK}
+              value={inputText}
+              onChangeText={handleInputChange}
+              onSubmitEditing={handleAddCustomAllergy}
+              returnKeyType="done"
+              testID="allergy-input"
             />
+
+            {/* Suggestions list */}
+            {showSuggestions && filteredSuggestions.length > 0 && (
+              <View style={styles.suggestionsContainer}>
+                <ScrollView
+                  style={styles.suggestionsList}
+                  showsVerticalScrollIndicator={false}
+                  nestedScrollEnabled={true}
+                  testID="suggestions-list"
+                >
+                  {filteredSuggestions.map((item) => (
+                    <TouchableOpacity
+                      key={item.id.toString()}
+                      style={styles.suggestionItem}
+                      onPress={() => handleAllergySelect(item)}
+                      testID={`suggestion-${item.id}`}
+                    >
+                      <Text style={styles.suggestionText}>{item.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
           </View>
         </View>
       </ScrollView>
 
       <View style={styles.footer}>
-        <View style={styles.buttonContainer}>
+        <View style={commonStyles.buttonContainer}>
           <CustomButton
             title="Back"
             onPress={handleBack}
@@ -140,81 +215,78 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#C8E6C9',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
   header: {
-    marginTop: 30,
-    marginBottom: 30,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#2E5D32',
-    lineHeight: 28,
+    marginTop: DIMENSIONS.SPACING_XXXL,
+    marginBottom: DIMENSIONS.SPACING_XXXL,
+    paddingHorizontal: DIMENSIONS.SPACING_XXL,
   },
   allergiesContainer: {
-    marginBottom: 20,
+    marginBottom: DIMENSIONS.SPACING_XL,
+    paddingHorizontal: DIMENSIONS.SPACING_XXL,
   },
-  predefinedContainer: {
+  selectedContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 24,
+    gap: DIMENSIONS.SPACING_SM,
+    marginBottom: DIMENSIONS.SPACING_LG,
   },
-  allergyTag: {
-    backgroundColor: '#E8F5E8',
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  allergyTagSelected: {
+  selectedTag: {
     backgroundColor: '#4A5D6A',
-    borderColor: '#2E5D32',
+    paddingVertical: DIMENSIONS.SPACING_SM,
+    paddingHorizontal: DIMENSIONS.SPACING_MD,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_BUTTON,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.SECONDARY,
   },
-  allergyText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2E5D32',
+  selectedTagText: {
+    fontSize: FONT_SIZES.MEDIUM - 2, // 14px
+    fontWeight: FONT_WEIGHTS.SEMIBOLD,
+    color: COLORS.WHITE,
+    marginRight: DIMENSIONS.SPACING_SM,
   },
-  allergyTextSelected: {
-    color: '#FFFFFF',
+  removeIcon: {
+    fontSize: FONT_SIZES.LARGE,
+    color: COLORS.WHITE,
+    fontWeight: FONT_WEIGHTS.BOLD,
   },
   inputContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    backgroundColor: COLORS.WHITE,
+    borderRadius: DIMENSIONS.BORDER_RADIUS_LARGE,
+    ...shadows.medium,
+    position: 'relative',
   },
   textInput: {
-    fontSize: 16,
-    color: '#2E5D32',
-    minHeight: 120,
+    fontSize: FONT_SIZES.MEDIUM,
+    color: COLORS.SECONDARY,
+    padding: DIMENSIONS.SPACING_LG,
+    minHeight: DIMENSIONS.SPACING_SECTION + 10, // 50px
     textAlignVertical: 'top',
-    lineHeight: 24,
+    lineHeight: FONT_SIZES.XL,
+  },
+  suggestionsContainer: {
+    borderTopWidth: 1,
+    borderTopColor: COLORS.GRAY_LIGHT,
+    maxHeight: 150,
+  },
+  suggestionsList: {
+    flexGrow: 0,
+  },
+  suggestionItem: {
+    paddingVertical: DIMENSIONS.SPACING_MD,
+    paddingHorizontal: DIMENSIONS.SPACING_LG,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.GRAY_LIGHT,
+  },
+  suggestionText: {
+    fontSize: FONT_SIZES.MEDIUM,
+    color: COLORS.SECONDARY,
+    fontWeight: FONT_WEIGHTS.MEDIUM,
   },
   footer: {
-    padding: 24,
-    backgroundColor: '#C8E6C9',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 16,
+    padding: DIMENSIONS.SPACING_XXL,
+    backgroundColor: COLORS.SECONDARY_LIGHT,
   },
   backButton: {
     flex: 1,

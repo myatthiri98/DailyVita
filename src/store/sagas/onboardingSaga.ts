@@ -1,35 +1,25 @@
 import { takeEvery, put, select, call } from 'redux-saga/effects'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { setLoading, setError, setCompleted } from '../slices/onboardingSlice'
+import {
+  setLoading,
+  setError,
+  setCompleted,
+  formatOnboardingData,
+} from '../slices/onboardingSlice'
 import { RootState } from '../index'
-import { FormattedOnboardingData } from '../../types'
+import { FormattedOnboardingData, SagaEffect } from '../../types'
+import { STORAGE_KEYS, REDUX_ACTIONS } from '../../constants'
 
-const ONBOARDING_DATA_KEY = 'onboarding_data'
-
-function* saveOnboardingDataSaga(): Generator<any, void, any> {
+function* saveOnboardingDataSaga(): Generator<unknown, void, RootState> {
   try {
     yield put(setLoading(true))
     const state: RootState = yield select((state: RootState) => state)
 
-    const dataToSave: FormattedOnboardingData = {
-      health_concerns: state.onboarding.prioritizedConcerns.map(
-        (concern, index) => ({
-          ...concern,
-          priority: index + 1,
-        }),
-      ),
-      diets: state.onboarding.selectedDiets,
-      is_daily_exposure: state.onboarding.isDailyExposure,
-      is_smoke: state.onboarding.isSmoke,
-      alcohol: state.onboarding.alcohol,
-      allergies: state.onboarding.allergies,
-      custom_allergies: state.onboarding.customAllergies,
-      timestamp: new Date().toISOString(),
-    }
+    const dataToSave = formatOnboardingData(state.onboarding)
 
     yield call(
       AsyncStorage.setItem,
-      ONBOARDING_DATA_KEY,
+      STORAGE_KEYS.ONBOARDING_DATA,
       JSON.stringify(dataToSave),
     )
 
@@ -40,29 +30,33 @@ function* saveOnboardingDataSaga(): Generator<any, void, any> {
 
     yield put(setCompleted(true))
     yield put(setLoading(false))
-  } catch (error: any) {
-    console.error('Error saving onboarding data:', error)
-    yield put(setError(error.message))
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error occurred'
+    console.error('Error saving onboarding data:', errorMessage)
+    yield put(setError(errorMessage))
     yield put(setLoading(false))
   }
 }
 
-function* loadOnboardingDataSaga(): Generator<any, void, any> {
+function* loadOnboardingDataSaga(): Generator<unknown, void, string | null> {
   try {
     const data: string | null = yield call(
       AsyncStorage.getItem,
-      ONBOARDING_DATA_KEY,
+      STORAGE_KEYS.ONBOARDING_DATA,
     )
     if (data) {
       const parsedData: FormattedOnboardingData = JSON.parse(data)
       console.log('Loaded onboarding data:', parsedData)
     }
-  } catch (error: any) {
-    console.error('Error loading onboarding data:', error)
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error occurred'
+    console.error('Error loading onboarding data:', errorMessage)
   }
 }
 
-export function* onboardingSaga(): Generator<any, void, any> {
-  yield takeEvery('onboarding/saveData', saveOnboardingDataSaga)
-  yield takeEvery('onboarding/loadData', loadOnboardingDataSaga)
+export function* onboardingSaga(): Generator<unknown, void, unknown> {
+  yield takeEvery(REDUX_ACTIONS.ONBOARDING_SAVE_DATA, saveOnboardingDataSaga)
+  yield takeEvery(REDUX_ACTIONS.ONBOARDING_LOAD_DATA, loadOnboardingDataSaga)
 }
