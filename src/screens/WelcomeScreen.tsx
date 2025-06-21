@@ -90,8 +90,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   lottieAnimation: {
-    width: 250,
-    height: 250,
+    width: 300,
+    height: 300,
     alignSelf: 'center',
     marginVertical: 20,
   },
