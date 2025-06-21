@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { ProgressBarProps } from '../types'
-import { COLORS, DIMENSIONS } from '../constants'
+import { COLORS } from '../constants'
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
   currentStep,
@@ -23,19 +23,17 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: DIMENSIONS.SPACING_XL,
-    paddingVertical: DIMENSIONS.SPACING_MD,
+    width: '100%',
+    backgroundColor: COLORS.GRAY_LIGHT,
   },
   progressBar: {
-    height: DIMENSIONS.PROGRESS_BAR_HEIGHT,
+    height: 25,
     backgroundColor: COLORS.GRAY_LIGHT,
-    borderRadius: DIMENSIONS.BORDER_RADIUS_SMALL,
-    overflow: 'hidden',
+    width: '100%',
   },
   progress: {
     height: '100%',
-    backgroundColor: COLORS.SUCCESS,
-    borderRadius: DIMENSIONS.BORDER_RADIUS_SMALL,
+    backgroundColor: COLORS.BLACK,
   },
 })
 

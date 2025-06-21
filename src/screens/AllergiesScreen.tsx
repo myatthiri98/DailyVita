@@ -128,8 +128,6 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
       style={commonStyles.safeAreaContainer}
       edges={['top', 'left', 'right']}
     >
-      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-
       <ScrollView style={commonStyles.scrollContent}>
         <View style={styles.header}>
           <Text style={textStyles.title}>
@@ -210,6 +208,7 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
           />
         </View>
       </View>
+      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
     </SafeAreaView>
   )
 }

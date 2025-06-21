@@ -27,13 +27,14 @@ export const commonStyles = {
   } as ViewStyle,
 
   header: {
-    marginTop: DIMENSIONS.SPACING_SCREEN,
+    marginTop: DIMENSIONS.SPACING_XS,
     alignItems: 'center',
   } as ViewStyle,
 
   footer: {
     marginBottom: DIMENSIONS.SPACING_SECTION,
     alignItems: 'center',
+    marginTop: DIMENSIONS.SPACING_LG,
   } as ViewStyle,
 
   // Button container styles
@@ -99,7 +100,7 @@ export const textStyles = {
   subtitle: {
     fontSize: FONT_SIZES.MEDIUM,
     color: COLORS.GRAY_TEXT,
-    textAlign: 'center',
+    textAlign: 'left',
     lineHeight: FONT_SIZES.XL,
   } as TextStyle,
 
@@ -121,7 +122,7 @@ export const textStyles = {
     fontSize: FONT_SIZES.MEDIUM,
     color: COLORS.GRAY_TEXT,
     lineHeight: FONT_SIZES.XL,
-    textAlign: 'center',
+    textAlign: 'left',
     marginBottom: DIMENSIONS.SPACING_XXXL,
   } as TextStyle,
 

@@ -123,8 +123,6 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
       style={commonStyles.safeAreaContainer}
       edges={['top', 'left', 'right']}
     >
-      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-
       <ScrollView
         style={commonStyles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -204,6 +202,7 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
           </View>
         </View>
       </ScrollView>
+      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
     </SafeAreaView>
   )
 }

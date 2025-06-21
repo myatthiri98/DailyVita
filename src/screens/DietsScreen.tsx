@@ -8,7 +8,6 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
-import { StackNavigationProp } from '@react-navigation/stack'
 import CustomButton from '../components/CustomButton'
 import ProgressBar from '../components/ProgressBar'
 import {
@@ -76,8 +75,6 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
       style={commonStyles.safeAreaContainer}
       edges={['top', 'left', 'right']}
     >
-      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-
       <ScrollView
         style={commonStyles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -191,6 +188,7 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
           />
         </View>
       </View>
+      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
     </SafeAreaView>
   )
 }

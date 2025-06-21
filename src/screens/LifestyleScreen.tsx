@@ -2,14 +2,12 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
-import { StackNavigationProp } from '@react-navigation/stack'
 import CustomButton from '../components/CustomButton'
 import ProgressBar from '../components/ProgressBar'
 import {
   setDailyExposure,
   setSmoke,
   setAlcohol,
-  prevStep,
   saveOnboardingData,
 } from '../store/slices/onboardingSlice'
 import { BaseNavigationProps } from '../types'
@@ -21,15 +19,13 @@ import {
   FONT_SIZES,
   FONT_WEIGHTS,
   ALCOHOL_OPTIONS,
-  MESSAGES,
   commonStyles,
   textStyles,
-  shadows,
 } from '../constants'
 
 type LifestyleScreenProps = BaseNavigationProps<'Lifestyle'>
 
-const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
+const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { currentStep, totalSteps, isDailyExposure, isSmoke, alcohol } =
     useSelector((state: RootState) => state.onboarding)
@@ -57,18 +53,11 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
     dispatch(saveOnboardingData())
   }
 
-  const handleBack = (): void => {
-    dispatch(prevStep())
-    navigation.goBack()
-  }
-
   return (
     <SafeAreaView
       style={commonStyles.safeAreaContainer}
       edges={['top', 'left', 'right']}
     >
-      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-
       <ScrollView style={styles.content}>
         {/* Sun Exposure Question */}
         <View style={styles.questionContainer}>
@@ -155,6 +144,7 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = ({ navigation }) => {
           />
         </View>
       </View>
+      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
     </SafeAreaView>
   )
 }
@@ -166,11 +156,7 @@ const styles = StyleSheet.create({
     paddingTop: DIMENSIONS.SPACING_XXXL,
   },
   questionContainer: {
-    // backgroundColor: COLORS.WHITE,
-    // borderRadius: DIMENSIONS.BORDER_RADIUS_LARGE,
-    // padding: DIMENSIONS.SPACING_XXL,
     marginBottom: DIMENSIONS.SPACING_XL,
-    // ...shadows.medium,
   },
   questionTitle: {
     fontSize: FONT_SIZES.MEDIUM,
