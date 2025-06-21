@@ -6,7 +6,14 @@ import CustomButton from '@/components/CustomButton'
 import { setCurrentStep } from '@/store/slices/onboardingSlice'
 import { BaseNavigationProps } from '@/types'
 import { AppDispatch } from '@/store'
-import { COLORS, FONT_SIZES, FONT_WEIGHTS, SCREEN_NAMES } from '@/constants'
+import {
+  BUTTON_TITLES,
+  COLORS,
+  FONT_SIZES,
+  FONT_WEIGHTS,
+  SCREEN_NAMES,
+  WELCOME_MESSAGES,
+} from '@/constants'
 import LottieView from 'lottie-react-native'
 
 type WelcomeScreenProps = BaseNavigationProps<'Welcome'>
@@ -16,7 +23,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   const animation = useRef<LottieView>(null)
 
   useEffect(() => {
-    // Auto-play animation when component mounts
     animation.current?.play()
   }, [])
 
@@ -28,10 +34,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
       <View style={styles.container}>
-        <Text style={styles.title}>Welcome to DailyVita</Text>
-        <Text style={styles.subtitle}>
-          Hello, we are here to make your life{'\n'}healthier and happier
-        </Text>
+        <Text style={styles.title}>{WELCOME_MESSAGES.TITLE}</Text>
+        <Text style={styles.subtitle}>{WELCOME_MESSAGES.SUBTITLE}</Text>
 
         <LottieView
           ref={animation}
@@ -41,13 +45,10 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
           style={styles.lottieAnimation}
         />
 
-        <Text style={styles.description}>
-          We will ask couple of questions to better{'\n'}understand your vitamin
-          need.
-        </Text>
+        <Text style={styles.description}>{WELCOME_MESSAGES.DESCRIPTION}</Text>
 
         <CustomButton
-          title="Get started"
+          title={BUTTON_TITLES.GET_STARTED}
           onPress={handleGetStarted}
           style={styles.buttonContainer}
         />

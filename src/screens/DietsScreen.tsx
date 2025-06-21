@@ -26,6 +26,7 @@ import {
   commonStyles,
   textStyles,
   shadows,
+  BUTTON_TITLES,
 } from '@/constants'
 import dietsData from '@/data/diets.json'
 
@@ -87,7 +88,6 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
         </View>
 
         <View style={styles.dietsContainer}>
-          {/* None Option */}
           <TouchableOpacity
             style={[styles.dietItem, noneSelected && styles.dietItemSelected]}
             onPress={() => handleDietToggle({ name: 'None' })}
@@ -110,7 +110,6 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
             </View>
           </TouchableOpacity>
 
-          {/* Diet Options */}
           {dietsData.data.map((diet: Diet) => {
             const selected = localSelectedDiets.some(
               (item) => item.id === diet.id,
@@ -176,13 +175,13 @@ const DietsScreen: React.FC<DietsScreenProps> = ({ navigation }) => {
       <View style={styles.footer}>
         <View style={commonStyles.buttonContainer}>
           <CustomButton
-            title="Back"
+            title={BUTTON_TITLES.BACK}
             onPress={handleBack}
             variant="secondary"
             style={styles.backButton}
           />
           <CustomButton
-            title="Next"
+            title={BUTTON_TITLES.NEXT}
             onPress={handleNext}
             style={styles.nextButton}
           />

@@ -28,6 +28,7 @@ import {
   commonStyles,
   textStyles,
   shadows,
+  BUTTON_TITLES,
 } from '@/constants'
 import allergiesData from '@/data/allergies.json'
 
@@ -44,7 +45,6 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
   const [inputText, setInputText] = useState<string>('')
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
 
-  // Create a combined list of predefined allergies and any custom ones
   const allAvailableAllergies = useMemo(() => {
     const customAllergyList = customAllergies
       .split(',')
@@ -57,7 +57,6 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
     return [...allergiesData.data, ...customAllergyList]
   }, [customAllergies])
 
-  // Filter suggestions based on input text
   const filteredSuggestions = useMemo(() => {
     if (!inputText.trim()) return []
 
@@ -89,7 +88,6 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
     const trimmedText = inputText.trim()
     if (trimmedText.length === 0) return
 
-    // Check if it already exists
     const exists = allAvailableAllergies.some(
       (allergy) => allergy.name.toLowerCase() === trimmedText.toLowerCase(),
     )
@@ -104,7 +102,6 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
   }
 
   const handleSubmit = (): void => {
-    // Separate predefined and custom allergies
     const predefinedAllergies = selectedAllergies.filter(
       (allergy) => !allergy.id.toString().startsWith('custom_'),
     )
@@ -137,7 +134,6 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
         </View>
 
         <View style={styles.allergiesContainer}>
-          {/* Selected allergies display */}
           {selectedAllergies.length > 0 && (
             <View style={styles.selectedContainer}>
               {selectedAllergies.map((allergy) => (
@@ -154,7 +150,6 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
             </View>
           )}
 
-          {/* Input container */}
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
@@ -167,7 +162,6 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
               testID="allergy-input"
             />
 
-            {/* Suggestions list */}
             {showSuggestions && filteredSuggestions.length > 0 && (
               <View style={styles.suggestionsContainer}>
                 <ScrollView
@@ -196,13 +190,13 @@ const AllergiesScreen: React.FC<AllergiesScreenProps> = ({ navigation }) => {
       <View style={styles.footer}>
         <View style={commonStyles.buttonContainer}>
           <CustomButton
-            title="Back"
+            title={BUTTON_TITLES.BACK}
             onPress={handleBack}
             variant="secondary"
             style={styles.backButton}
           />
           <CustomButton
-            title="Next"
+            title={BUTTON_TITLES.NEXT}
             onPress={handleSubmit}
             style={styles.submitButton}
           />

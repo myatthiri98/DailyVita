@@ -128,6 +128,8 @@ export const MESSAGES = {
   MAX_SELECTION: 'Maximum Selection',
   MAX_HEALTH_CONCERNS_MESSAGE: `You can select up to ${LIMITS.MAX_HEALTH_CONCERNS} health concerns.`,
   MIN_HEALTH_CONCERNS_MESSAGE: 'Please select at least one health concern.',
+  COMPLETE_REQUIRED_FIELDS: 'Complete Required Fields',
+  COMPLETE_ALL_QUESTIONS: 'Please answer all questions before proceeding.',
 } as const
 
 // Alcohol options
@@ -139,3 +141,32 @@ export const ALCOHOL_OPTIONS = {
 
 export type AlcoholOption =
   (typeof ALCOHOL_OPTIONS)[keyof typeof ALCOHOL_OPTIONS]
+
+export const LIFESTYLE_QUESTIONS = {
+  SUN_EXPOSURE: 'Is your daily exposure to sun is limited?',
+  SMOKING: 'Do you current smoke (tobacco or marijuana)?',
+  ALCOHOL_CONSUMPTION:
+    'On average, how many alcoholic beverages do you have in a week?',
+} as const
+
+export const RADIO_LABELS = {
+  YES: 'Yes',
+  NO: 'No',
+  ALCOHOL_LOW: '0 - 1',
+  ALCOHOL_MEDIUM: '2 - 5',
+  ALCOHOL_HIGH: '5+',
+} as const
+
+export const BUTTON_TITLES = {
+  GET_STARTED: 'Get started',
+  NEXT: 'Next',
+  BACK: 'Back',
+  GET_PERSONALIZED_VITAMIN: 'Get my personalized vitamin',
+} as const
+
+export const WELCOME_MESSAGES = {
+  TITLE: 'Welcome to DailyVita',
+  SUBTITLE: 'Hello, we are here to make your life healthier and happier',
+  DESCRIPTION:
+    'We will ask couple of questions to better understand your vitamin need.',
+} as const

@@ -19,6 +19,10 @@ import {
   FONT_SIZES,
   FONT_WEIGHTS,
   ALCOHOL_OPTIONS,
+  LIFESTYLE_QUESTIONS,
+  RADIO_LABELS,
+  BUTTON_TITLES,
+  MESSAGES,
   commonStyles,
   textStyles,
 } from '@/constants'
@@ -41,8 +45,8 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
       alcoholConsumption === null
     ) {
       Alert.alert(
-        'Complete Required Fields',
-        'Please answer all questions before proceeding.',
+        MESSAGES.COMPLETE_REQUIRED_FIELDS,
+        MESSAGES.COMPLETE_ALL_QUESTIONS,
       )
       return
     }
@@ -59,10 +63,9 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
       edges={['top', 'left', 'right']}
     >
       <ScrollView style={styles.content}>
-        {/* Sun Exposure Question */}
         <View style={styles.questionContainer}>
           <Text style={styles.questionTitle}>
-            Is your daily exposure to sun is limited?{' '}
+            {LIFESTYLE_QUESTIONS.SUN_EXPOSURE}{' '}
             <Text style={textStyles.asterisk}>*</Text>
           </Text>
 
@@ -70,22 +73,21 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
             <RadioButton<boolean | null>
               selected={sunExposure}
               onPress={setSunExposure}
-              label="Yes"
+              label={RADIO_LABELS.YES}
               value={true}
             />
             <RadioButton<boolean | null>
               selected={sunExposure}
               onPress={setSunExposure}
-              label="No"
+              label={RADIO_LABELS.NO}
               value={false}
             />
           </View>
         </View>
 
-        {/* Smoking Question */}
         <View style={styles.questionContainer}>
           <Text style={styles.questionTitle}>
-            Do you current smoke (tobacco or marijuana)?{' '}
+            {LIFESTYLE_QUESTIONS.SMOKING}{' '}
             <Text style={textStyles.asterisk}>*</Text>
           </Text>
 
@@ -93,22 +95,21 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
             <RadioButton<boolean | null>
               selected={smoking}
               onPress={setSmoking}
-              label="Yes"
+              label={RADIO_LABELS.YES}
               value={true}
             />
             <RadioButton<boolean | null>
               selected={smoking}
               onPress={setSmoking}
-              label="No"
+              label={RADIO_LABELS.NO}
               value={false}
             />
           </View>
         </View>
 
-        {/* Alcohol Question */}
         <View style={styles.questionContainer}>
           <Text style={styles.questionTitle}>
-            On average, how many alcoholic beverages do you have in a week?{' '}
+            {LIFESTYLE_QUESTIONS.ALCOHOL_CONSUMPTION}{' '}
             <Text style={textStyles.asterisk}>*</Text>
           </Text>
 
@@ -116,19 +117,19 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
             <RadioButton
               selected={alcoholConsumption}
               onPress={setAlcoholConsumption}
-              label="0 - 1"
+              label={RADIO_LABELS.ALCOHOL_LOW}
               value={ALCOHOL_OPTIONS.LOW}
             />
             <RadioButton
               selected={alcoholConsumption}
               onPress={setAlcoholConsumption}
-              label="2 - 5"
+              label={RADIO_LABELS.ALCOHOL_MEDIUM}
               value={ALCOHOL_OPTIONS.MEDIUM}
             />
             <RadioButton
               selected={alcoholConsumption}
               onPress={setAlcoholConsumption}
-              label="5+"
+              label={RADIO_LABELS.ALCOHOL_HIGH}
               value={ALCOHOL_OPTIONS.HIGH}
             />
           </View>
@@ -138,7 +139,7 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
       <View style={styles.footer}>
         <View style={styles.buttonContainer}>
           <CustomButton
-            title="Get my personalized vitamin"
+            title={BUTTON_TITLES.GET_PERSONALIZED_VITAMIN}
             onPress={handleNext}
             style={commonStyles.singleButtonContainer}
           />

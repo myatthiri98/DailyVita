@@ -84,8 +84,8 @@ DailyVita/
 │   ├── components/           # Reusable UI components
 │   │   ├── CustomButton.tsx  # Custom button component
 │   │   ├── ProgressBar.tsx   # Progress indicator
-│   │   ├── RadioButton.tsx   # Radio button component
-│   │   └── withApiState.tsx  # HOC for API states
+│   │   └── RadioButton.tsx   # Radio button component
+│   │
 │   ├── constants/            # App constants
 │   ├── data/                 # Static data files
 │   │   ├── allergies.json    # Predefined allergies

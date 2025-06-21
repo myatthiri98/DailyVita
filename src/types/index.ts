@@ -51,7 +51,6 @@ export interface BaseNavigationProps<T extends keyof RootStackParamList> {
   navigation: StackNavigationProp<RootStackParamList, T>
 }
 
-// Component prop types
 export type ButtonVariant = 'primary' | 'secondary'
 
 export interface ButtonProps {
@@ -81,10 +80,6 @@ export interface ApiStateProps {
   children?: React.ReactNode
 }
 
-// HOC types
-export type WithApiState<P extends object> = P & ApiStateProps
-
-// Data formatting types
 export interface FormattedOnboardingData {
   health_concerns: (HealthConcern & { priority: number })[]
   diets: Diet[]
@@ -94,17 +89,4 @@ export interface FormattedOnboardingData {
   allergies: Allergy[]
   custom_allergies: string
   timestamp: string
-}
-
-// Saga types
-export interface SagaEffect {
-  type: string
-  payload?: unknown
-}
-
-// Utility types
-export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
-
-export type RequiredNonNull<T> = {
-  [K in keyof T]-?: NonNullable<T[K]>
 }

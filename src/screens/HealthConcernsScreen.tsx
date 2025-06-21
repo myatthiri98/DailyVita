@@ -32,6 +32,7 @@ import {
   ANIMATION,
   LIMITS,
   MESSAGES,
+  BUTTON_TITLES,
 } from '@/constants'
 import { commonStyles, textStyles, shadows } from '@/constants'
 import healthConcernsData from '@/data/healthconcerns.json'
@@ -49,7 +50,6 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
     useState<HealthConcern[]>(healthConcerns)
   const [prioritizedData, setPrioritizedData] = useState<HealthConcern[]>([])
 
-  // Update prioritized data when selected concerns change
   useEffect(() => {
     setPrioritizedData([...selectedConcerns])
   }, [selectedConcerns])
@@ -127,7 +127,6 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
         style={commonStyles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Health Concerns Selection Section */}
         <View style={styles.header}>
           <Text style={textStyles.title}>
             Select the top health concerns.{' '}
@@ -167,7 +166,6 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
           })}
         </View>
 
-        {/* Prioritize Section */}
         {selectedConcerns.length > 0 && (
           <View style={styles.prioritizeSection}>
             <Text style={textStyles.sectionTitle}>Prioritize</Text>
@@ -189,13 +187,13 @@ const HealthConcernsScreen: React.FC<HealthConcernsScreenProps> = ({
         <View style={styles.footer}>
           <View style={commonStyles.buttonContainer}>
             <CustomButton
-              title="Back"
+              title={BUTTON_TITLES.BACK}
               onPress={handleBack}
               variant="secondary"
               style={styles.backButton}
             />
             <CustomButton
-              title="Next"
+              title={BUTTON_TITLES.NEXT}
               onPress={handleNext}
               style={styles.nextButton}
             />

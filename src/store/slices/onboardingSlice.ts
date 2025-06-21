@@ -10,7 +10,6 @@ import {
 import { STORAGE_KEYS } from '@/constants'
 import { AlcoholOption } from '@/constants'
 
-// Helper function to format onboarding data
 const formatOnboardingData = (
   state: OnboardingState,
 ): FormattedOnboardingData => ({
@@ -27,7 +26,6 @@ const formatOnboardingData = (
   timestamp: new Date().toISOString(),
 })
 
-// Async thunk for saving onboarding data
 export const saveOnboardingData = createAsyncThunk(
   'onboarding/saveData',
   async (_, { getState, rejectWithValue }) => {
@@ -40,7 +38,6 @@ export const saveOnboardingData = createAsyncThunk(
         JSON.stringify(dataToSave),
       )
 
-      // Print to console as required
       console.log('=== ONBOARDING DATA ===')
       console.log(JSON.stringify(dataToSave, null, 2))
       console.log('=====================')
@@ -161,5 +158,4 @@ export const {
 
 export default onboardingSlice.reducer
 
-// Export the helper function for reuse
 export { formatOnboardingData }

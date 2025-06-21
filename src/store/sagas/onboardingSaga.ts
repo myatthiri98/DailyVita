@@ -23,7 +23,6 @@ function* saveOnboardingDataSaga(): Generator<unknown, void, RootState> {
       JSON.stringify(dataToSave),
     )
 
-    // Print to console as required
     console.log('=== ONBOARDING DATA ===')
     console.log(JSON.stringify(dataToSave, null, 2))
     console.log('=====================')
