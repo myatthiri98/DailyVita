@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import React, { useRef, useEffect } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch } from 'react-redux'
 import CustomButton from '@/components/CustomButton'
@@ -7,11 +7,18 @@ import { setCurrentStep } from '@/store/slices/onboardingSlice'
 import { BaseNavigationProps } from '@/types'
 import { AppDispatch } from '@/store'
 import { COLORS, FONT_SIZES, FONT_WEIGHTS, SCREEN_NAMES } from '@/constants'
+import LottieView from 'lottie-react-native'
 
 type WelcomeScreenProps = BaseNavigationProps<'Welcome'>
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const animation = useRef<LottieView>(null)
+
+  useEffect(() => {
+    // Auto-play animation when component mounts
+    animation.current?.play()
+  }, [])
 
   const handleGetStarted = (): void => {
     dispatch(setCurrentStep(0))
@@ -26,9 +33,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
           Hello, we are here to make your life{'\n'}healthier and happier
         </Text>
 
-        <Image
-          source={require('../../assets/images/illustrationImage.png')}
-          style={styles.illustration}
+        <LottieView
+          ref={animation}
+          source={require('../../assets/lotties/DailyVita.json')}
+          autoPlay
+          loop
+          style={styles.lottieAnimation}
         />
 
         <Text style={styles.description}>
@@ -78,6 +88,12 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginBottom: 20,
     marginTop: 20,
+  },
+  lottieAnimation: {
+    width: 250,
+    height: 250,
+    alignSelf: 'center',
+    marginVertical: 20,
   },
   description: {
     fontSize: FONT_SIZES.MEDIUM,
