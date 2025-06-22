@@ -130,6 +130,9 @@ export const MESSAGES = {
   MIN_HEALTH_CONCERNS_MESSAGE: 'Please select at least one health concern.',
   COMPLETE_REQUIRED_FIELDS: 'Complete Required Fields',
   COMPLETE_ALL_QUESTIONS: 'Please answer all questions before proceeding.',
+  SUCCESS_ONBOARDING_SAVED:
+    'Personalized vitamin recommendations have been saved successfully!',
+  ERROR_ONBOARDING_SAVE: 'Failed to save your data. Please try again.',
 } as const
 
 // Alcohol options

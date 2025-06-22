@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
+import Toast from 'react-native-toast-message'
 import CustomButton from '@/components/CustomButton'
 import ProgressBar from '@/components/ProgressBar'
 import {
@@ -31,14 +32,21 @@ type LifestyleScreenProps = BaseNavigationProps<'Lifestyle'>
 
 const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { currentStep, totalSteps, isDailyExposure, isSmoke, alcohol } =
-    useSelector((state: RootState) => state.onboarding)
+  const {
+    currentStep,
+    totalSteps,
+    isDailyExposure,
+    isSmoke,
+    alcohol,
+    isLoading,
+    isCompleted,
+  } = useSelector((state: RootState) => state.onboarding)
 
   const [sunExposure, setSunExposure] = useState(isDailyExposure)
   const [smoking, setSmoking] = useState(isSmoke)
   const [alcoholConsumption, setAlcoholConsumption] = useState(alcohol)
 
-  const handleNext = (): void => {
+  const handleNext = async (): Promise<void> => {
     if (
       sunExposure === null ||
       smoking === null ||
@@ -51,11 +59,47 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
       return
     }
 
+    // Prevent multiple clicks if already loading or completed
+    if (isLoading || isCompleted) {
+      return
+    }
+
     dispatch(setDailyExposure(sunExposure))
     dispatch(setSmoke(smoking))
     dispatch(setAlcohol(alcoholConsumption))
-    dispatch(saveOnboardingData())
+
+    try {
+      await dispatch(saveOnboardingData()).unwrap()
+
+      // Show success toast
+      Toast.show({
+        type: 'success',
+        text1: 'Success!',
+        text2: MESSAGES.SUCCESS_ONBOARDING_SAVED,
+        position: 'top',
+        visibilityTime: 4000,
+      })
+    } catch (error) {
+      // Show error toast
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: MESSAGES.ERROR_ONBOARDING_SAVE,
+        position: 'top',
+        visibilityTime: 4000,
+      })
+      console.error('Failed to save onboarding data:', error)
+    }
   }
+
+  // Determine button title and disabled state
+  const getButtonTitle = () => {
+    if (isLoading) return 'Saving...'
+    if (isCompleted) return 'Completed ✓'
+    return BUTTON_TITLES.GET_PERSONALIZED_VITAMIN
+  }
+
+  const isButtonDisabled = isLoading || isCompleted
 
   return (
     <SafeAreaView
@@ -139,9 +183,10 @@ const LifestyleScreen: React.FC<LifestyleScreenProps> = () => {
       <View style={styles.footer}>
         <View style={styles.buttonContainer}>
           <CustomButton
-            title={BUTTON_TITLES.GET_PERSONALIZED_VITAMIN}
+            title={getButtonTitle()}
             onPress={handleNext}
             style={commonStyles.singleButtonContainer}
+            disabled={isButtonDisabled}
           />
         </View>
       </View>
